@@ -39,7 +39,7 @@ puppeteer
       .locator("form button.btn.mat-btn-lg.btn-block.btn-brand-orange")
       .click();
 
-    setInterval(() => {
+    const gotoApplicationFormInterval = setInterval(() => {
       console.log("interval");
       (async () => {
         console.log(await page.url());
@@ -50,6 +50,8 @@ puppeteer
           );
           console.log(applicationButton.innerHTML);
           applicationButton.click();
+          clearInterval(gotoApplicationFormInterval);
+          console.log("interval cleared");
         });
       })();
     }, 1000);
