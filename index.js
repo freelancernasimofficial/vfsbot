@@ -19,7 +19,7 @@ puppeteer
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
-      `--proxy-server=185.199.231.45:8382`,
+      `--proxy-server=185.199.228.220:7300`,
       // "--auto-open-devtools-for-tabs",
     ],
   })
