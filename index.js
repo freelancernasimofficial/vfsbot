@@ -19,7 +19,7 @@ puppeteer
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
-      `--proxy-server=rp.proxyscrape.com:6060:uv3ythl4tgh9uu8:m3dkgmvpwc5yq9y`,
+      `--proxy-server=rp.proxyscrape.com:6060`,
       // "--auto-open-devtools-for-tabs",
     ],
   })
@@ -27,31 +27,34 @@ puppeteer
     const page = (await browser.pages())[0];
     await page.setDefaultTimeout(300000);
     await page.setBypassCSP(true);
+    await page.authenticate({
+      username: "uv3ythl4tgh9uu8",
+      password: "m3dkgmvpwc5yq9y",
+    });
 
-    await page.goto("http://checkip.dyndns.com/");
-    // await page.goto("https://visa.vfsglobal.com/npl/en/ltp/login");
-    // await page.locator("input#mat-input-0").fill("winbazilive@gmail.com");
-    // await page.locator("input#mat-input-1").fill("Mak223166@");
-    // await page.locator("form button").click();
-    // await page.waitForNavigation({ waitUntil: "networkidle2" });
-    // const newBookingButton = await page.$(
-    //   "button.mat-focus-indicator.btn.mat-btn-lg.btn-block.btn-brand-orange.mat-raised-button.mat-button-base",
-    // );
-    // await newBookingButton.evaluate((b) => b.click());
-    // setInterval(async () => {
-    //   await page.evaluate(() => {
-    //     if (
-    //       !document.querySelector(
-    //         "mat-select#mat-select-4 div.mat-select-value>span>span.mat-select-min-line",
-    //       )?.innerText
-    //     ) {
-    //       document.querySelector("mat-select#mat-select-4")?.click();
-    //       document.querySelector("mat-option#mat-option-2")?.click();
-    //     }
-    //   });
+    await page.goto("https://visa.vfsglobal.com/npl/en/ltp/login");
+    await page.locator("input#mat-input-0").fill("winbazilive@gmail.com");
+    await page.locator("input#mat-input-1").fill("Mak223166@");
+    await page.locator("form button").click();
+    await page.waitForNavigation({ waitUntil: "networkidle2" });
+    const newBookingButton = await page.$(
+      "button.mat-focus-indicator.btn.mat-btn-lg.btn-block.btn-brand-orange.mat-raised-button.mat-button-base",
+    );
+    await newBookingButton.evaluate((b) => b.click());
+    setInterval(async () => {
+      await page.evaluate(() => {
+        if (
+          !document.querySelector(
+            "mat-select#mat-select-4 div.mat-select-value>span>span.mat-select-min-line",
+          )?.innerText
+        ) {
+          document.querySelector("mat-select#mat-select-4")?.click();
+          document.querySelector("mat-option#mat-option-2")?.click();
+        }
+      });
 
-    //   console.log("interval: ", Date.now());
-    // }, 1000);
+      console.log("interval: ", Date.now());
+    }, 1000);
 
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
     // await browser.close();
