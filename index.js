@@ -19,7 +19,7 @@ puppeteer
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
-      `--proxy-server=185.199.228.220:7300`,
+      `--proxy-server=185.199.231.45:8382`,
       // "--auto-open-devtools-for-tabs",
     ],
   })
@@ -31,30 +31,16 @@ puppeteer
     });
     await page.setDefaultTimeout(300000);
     await page.setBypassCSP(true);
-    await page.goto("https://visa.vfsglobal.com/npl/en/ltp/login");
+    await page.goto("https://visa.vfsglobal.com/npl/en/ltp/application-detail");
     await page.locator("input#mat-input-0").fill("winbazilive@gmail.com");
     await page.locator("input#mat-input-1").fill("Mak223166@");
-
-    await page
-      .locator("form button.btn.mat-btn-lg.btn-block.btn-brand-orange")
-      .click();
-
-    const gotoApplicationFormInterval = setInterval(() => {
-      console.log("interval");
-      (async () => {
-        console.log(await page.url());
-        await page.evaluate(() => {
-          console.log("evaluate");
-          const applicationButton = document.querySelector(
-            "button.btn.mat-btn-lg.btn-block.btn-brand-orange",
-          );
-          console.log(applicationButton.innerHTML);
-          applicationButton.click();
-          clearInterval(gotoApplicationFormInterval);
-          console.log("interval cleared");
-        });
-      })();
-    }, 1000);
+    await page.locator("form button").click();
+    await page.waitForRequest(
+      "https://visa.vfsglobal.com/npl/en/ltp/dashboard",
+    );
+    await page.evaluate(() => {
+      document.querySelector("body").style.background = "red";
+    });
 
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
     // await browser.close();
