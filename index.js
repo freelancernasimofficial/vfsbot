@@ -12,10 +12,10 @@ puppeteer
     targetFilter: (target) => !!target.url(),
     ignoreHTTPSErrors: true,
     headless: false,
-    // executablePath:
-    //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    // userDataDir:
-    //   "/Users/freelancernasim/Library/Application Support/Google/Chrome/Default",
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    userDataDir:
+      "/Users/freelancernasim/Library/Application Support/Google/Chrome/Default",
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
@@ -31,19 +31,16 @@ puppeteer
     });
     await page.setDefaultTimeout(300000);
     await page.setBypassCSP(true);
-    await page.goto("https://visa.vfsglobal.com/npl/en/ltp/application-detail");
+
+    await page.goto("https://visa.vfsglobal.com/npl/en/ltp/login");
     await page.locator("input#mat-input-0").fill("winbazilive@gmail.com");
     await page.locator("input#mat-input-1").fill("Mak223166@");
     await page.locator("form button").click();
-    await page.waitForRequest(
-      "https://visa.vfsglobal.com/npl/en/ltp/dashboard",
+    await page.waitForNavigation({ waitUntil: "networkidle2" });
+    const newBookingButton = await page.$(
+      "button.mat-focus-indicator.btn.mat-btn-lg.btn-block.btn-brand-orange.mat-raised-button.mat-button-base",
     );
-    await page.evaluate(() => {
-      setTimeout(() => {
-        console.log("interval");
-      }, 1000);
-    });
-
+    await newBookingButton.evaluate((b) => b.click());
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
     // await browser.close();
     console.log("all done");
