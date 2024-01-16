@@ -19,7 +19,7 @@ puppeteer
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
-      `--proxy-server=185.199.228.220:7300`,
+      `--proxy-server=188.74.183.10:8279`,
       // "--auto-open-devtools-for-tabs",
     ],
   })
@@ -41,9 +41,20 @@ puppeteer
       "button.mat-focus-indicator.btn.mat-btn-lg.btn-block.btn-brand-orange.mat-raised-button.mat-button-base",
     );
     await newBookingButton.evaluate((b) => b.click());
-    await page.waitForNavigation({ waitUntil: "networkidle2" });
-    const apCat = await page.$("mat-select#mat-select-4");
-    await apCat.evaluate((e) => e.click());
+    setInterval(async () => {
+      await page.evaluate(() => {
+        if (
+          !document.querySelector(
+            "mat-select#mat-select-4 div.mat-select-value>span>span.mat-select-min-line",
+          )?.innerText
+        ) {
+          document.querySelector("mat-select#mat-select-4")?.click();
+          document.querySelector("mat-option#mat-option-2")?.click();
+        }
+      });
+
+      console.log("interval: ", Date.now());
+    }, 1000);
 
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
     // await browser.close();
