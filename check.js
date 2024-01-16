@@ -39,6 +39,7 @@ puppeteer
       if (
         (await page.url()) === "https://visa.vfsglobal.com/npl/en/ltp/login"
       ) {
+        console.log("process working for", await page.url());
         const emailBox = await page.$("input#mat-input-0");
         const pwdBox = await page.$("input#mat-input-1");
         if (emailBox && pwdBox) {
@@ -69,19 +70,35 @@ puppeteer
           clearInterval(intervalCount);
           await page.reload();
         }
-        console.log("process working for", await page.url());
       }
 
       if (
         (await page.url()) === "https://visa.vfsglobal.com/npl/en/ltp/dashboard"
       ) {
+        console.log("process working for", await page.url());
         const gotoAppBtn = await page.$("button.mat-btn-lg");
         if (gotoAppBtn) {
           await gotoAppBtn.evaluate((btn) => btn.click());
         }
+      }
+
+      if (
+        (await page.url()) ===
+        "https://visa.vfsglobal.com/npl/en/ltp/application-detail"
+      ) {
         console.log("process working for", await page.url());
+        const appCatSelect = await page.$(
+          "#mat-select-4[aria-expanded='false']",
+        );
+        const appCatValue = await page.$("#mat-option-2");
+        if (appCatSelect) {
+          await appCatSelect.click();
+        }
+        if (appCatValue) {
+          await appCatValue.click();
+        }
       }
       console.log("interval: ", Date.now());
-      await page.screenshot({ path: "page.jpg", fullPage: true });
+      // await page.screenshot({ path: "page.jpg", fullPage: true });
     }, 500);
   });
