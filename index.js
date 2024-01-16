@@ -12,10 +12,10 @@ puppeteer
     targetFilter: (target) => !!target.url(),
     ignoreHTTPSErrors: true,
     headless: false,
-    executablePath:
-      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    userDataDir:
-      "/Users/freelancernasim/Library/Application Support/Google/Chrome/Default",
+    // executablePath:
+    //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    // userDataDir:
+    //   "/Users/freelancernasim/Library/Application Support/Google/Chrome/Default",
     args: [
       `--disable-extensions-except=${pathToExtension}`,
       `--load-extension=${pathToExtension}`,
@@ -39,7 +39,9 @@ puppeteer
       "https://visa.vfsglobal.com/npl/en/ltp/dashboard",
     );
     await page.evaluate(() => {
-      document.querySelector("body").style.background = "red";
+      setTimeout(() => {
+        console.log("interval");
+      }, 1000);
     });
 
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
