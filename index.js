@@ -41,6 +41,10 @@ puppeteer
       "button.mat-focus-indicator.btn.mat-btn-lg.btn-block.btn-brand-orange.mat-raised-button.mat-button-base",
     );
     await newBookingButton.evaluate((b) => b.click());
+    await page.waitForNavigation({ waitUntil: "networkidle2" });
+    const apCat = await page.$("mat-select#mat-select-4");
+    await apCat.evaluate((e) => e.click());
+
     // await page.screenshot({ path: Date.now() + ".jpg", fullPage: true });
     // await browser.close();
     console.log("all done");
