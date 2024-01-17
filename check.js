@@ -87,18 +87,62 @@ puppeteer
         "https://visa.vfsglobal.com/npl/en/ltp/application-detail"
       ) {
         console.log("process working for", await page.url());
-        const appCatSelect = await page.$(
-          "#mat-select-4[aria-expanded='false']",
+
+        //start changing application category
+
+        //get application category select option tag
+        const selectApplicationCategoryTag = await page.$("#mat-select-4");
+
+        //get selected span tag
+        const selectedOptionSpanTag = await page.$(
+          "#mat-select-4>div>div>span>span",
         );
-        const appCatValue = await page.$("#mat-option-2");
-        if (appCatSelect) {
-          await appCatSelect.click();
+        //Select option number 2 if not already selected
+        if (!selectedOptionSpanTag) {
+          if (selectApplicationCategoryTag) {
+            //click options tag
+            await selectApplicationCategoryTag.click();
+          }
+
+          //get the option 2
+          const appCatValue2 = await page.$("#mat-option-2");
+          if (appCatValue2) {
+            //click the option 2
+            await appCatValue2.click();
+            console.log("option 2 selected");
+          }
         }
-        if (appCatValue) {
-          await appCatValue.click();
+
+        //if already selected
+        if (selectedOptionSpanTag) {
+          const selectedText = await selectedOptionSpanTag.evaluate(
+            (el) => el.innerText,
+          );
+          if (selectedText === "Lithuania Temporary Residence Permit") {
+            await selectApplicationCategoryTag.click();
+            //get the option 1
+            const appCatValue1 = await page.$("#mat-option-1");
+            if (appCatValue1) {
+              //click the option 1
+              await appCatValue1.click();
+              console.log("option 1 selected");
+            }
+          }
+          if (selectedText === "Lithuania National D Visa") {
+            await selectApplicationCategoryTag.click();
+            //get the option 1
+            const appCatValue2 = await page.$("#mat-option-2");
+            if (appCatValue2) {
+              //click the option 1
+              await appCatValue2.click();
+              console.log("option 2 selected");
+            }
+          }
         }
+
+        //end application changing category
       }
       console.log("interval: ", Date.now());
       // await page.screenshot({ path: "page.jpg", fullPage: true });
-    }, 500);
+    }, 100);
   });
