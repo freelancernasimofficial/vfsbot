@@ -175,13 +175,36 @@ async function startBot() {
           if (alertTag) {
             const alertText = await alertTag.evaluate((el) => el.innerText);
             console.log(alertText);
-            await selectApplicationCategoryTag.click();
-            //get the option 2
-            const appCatValue2 = await page.$("#mat-option-2");
-            if (appCatValue2) {
-              //click the option 2
-              await appCatValue2.click();
+
+            if (alertText.startsWith("Earliest available")) {
+              const subCategoryOption = await page.$("#mat-select-2");
+              const selectedSubOptionSpanTag = await page.$(
+                "#mat-select-2>div>div>span>span",
+              );
+              if (!selectedSubOptionSpanTag && subCategoryOption) {
+                await subCategoryOption.click();
+                const getSubOption = await page.$("#mat-option-4");
+
+                if (getSubOption) {
+                  await getSubOption.click();
+                }
+              }
+
+              const continueButton = await page.$(
+                "form button.mat-btn-lg.btn-brand-orange[type='button']",
+              );
+              if (selectedSubOptionSpanTag && continueButton) {
+                await continueButton.click();
+              }
             }
+
+            //   await selectApplicationCategoryTag.click();
+            // //get the option 2
+            // const appCatValue2 = await page.$("#mat-option-2");
+            // if (appCatValue2) {
+            //   //click the option 2
+            //   await appCatValue2.click();
+            // }
           }
         }
       }
