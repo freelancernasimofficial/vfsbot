@@ -137,31 +137,31 @@ async function startBot() {
       }
 
       //if already selected
-      if (selectedOptionSpanTag) {
-        const selectedText = await selectedOptionSpanTag.evaluate(
-          (el) => el.innerText,
-        );
-        if (selectedText === "Lithuania Temporary Residence Permit") {
-          await selectApplicationCategoryTag.click();
-          //get the option 1
-          const appCatValue1 = await page.$("#mat-option-1");
-          if (appCatValue1) {
-            //click the option 1
-            await appCatValue1.click();
-            console.log("option 1 selected");
-          }
-        }
-        if (selectedText === "Lithuania National D Visa") {
-          await selectApplicationCategoryTag.click();
-          //get the option 1
-          const appCatValue2 = await page.$("#mat-option-2");
-          if (appCatValue2) {
-            //click the option 1
-            await appCatValue2.click();
-            console.log("option 2 selected");
-          }
-        }
-      }
+      // if (selectedOptionSpanTag) {
+      //   const selectedText = await selectedOptionSpanTag.evaluate(
+      //     (el) => el.innerText,
+      //   );
+      //   if (selectedText === "Lithuania Temporary Residence Permit") {
+      //     await selectApplicationCategoryTag.click();
+      //     //get the option 1
+      //     const appCatValue1 = await page.$("#mat-option-1");
+      //     if (appCatValue1) {
+      //       //click the option 1
+      //       await appCatValue1.click();
+      //       console.log("option 1 selected");
+      //     }
+      //   }
+      //   if (selectedText === "Lithuania National D Visa") {
+      //     await selectApplicationCategoryTag.click();
+      //     //get the option 1
+      //     const appCatValue2 = await page.$("#mat-option-2");
+      //     if (appCatValue2) {
+      //       //click the option 1
+      //       await appCatValue2.click();
+      //       console.log("option 2 selected");
+      //     }
+      //   }
+      // }
 
       //end application changing category
     }
