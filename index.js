@@ -37,19 +37,41 @@ async function startBot() {
 
   const timer = setInterval(async () => {
     //start timer
-    if ((await page.url()) === loginURL) {
-      console.log(
-        "process working for",
-        await page.url(),
-        Date.now() / 10000000,
-      );
 
+    //check if ip blocked
+    const getBlockAlert = await page.$("div.alert[role='alert'] span");
+    if (getBlockAlert) {
+      const blockAlertText = await getBlockAlert.evaluate((el) => el.innerText);
+      if (blockAlertText.startsWith("Sorry you have encountered an error")) {
+        console.log("ip blocked reloading");
+        clearInterval(timer);
+        await browser.close();
+        return startBot();
+      }
+    }
+
+    if ((await page.url()) === loginURL) {
+      //check if recaptcha found
       const recaptcha = await page.$("form iframe[title='reCAPTCHA']");
       if (recaptcha) {
         console.log("recaptcha found relaunching");
         clearInterval(timer);
         await browser.close();
         return startBot();
+      }
+
+      //check cloudflare
+      const cloudFlareLabel = await page.$("form div.ctp-label");
+      if (cloudFlareLabel) {
+        const cloudFlareText = await cloudFlareLabel.evaluate(
+          (el) => el.innerText,
+        );
+        if (cloudFlareText === "Verify you are human") {
+          console.log("cloudflare error, relaunching browser");
+          clearInterval(timer);
+          await browser.close();
+          return startBot();
+        }
       }
 
       const emailBox = await page.$("input#mat-input-0");
@@ -78,11 +100,6 @@ async function startBot() {
     if (
       (await page.url()) === "https://visa.vfsglobal.com/npl/en/ltp/dashboard"
     ) {
-      console.log(
-        "process working for",
-        await page.url(),
-        Date.now() / 10000000,
-      );
       const gotoAppBtn = await page.$("button.mat-btn-lg");
       if (gotoAppBtn) {
         await gotoAppBtn.evaluate((btn) => btn.click());
@@ -93,25 +110,6 @@ async function startBot() {
       (await page.url()) ===
       "https://visa.vfsglobal.com/npl/en/ltp/application-detail"
     ) {
-      console.log(
-        "process working for",
-        await page.url(),
-        Date.now() / 10000000,
-      );
-      //check if ip blocked
-      const getBlockAlert = await page.$("div.alert[role='alert'] span");
-      if (getBlockAlert) {
-        const blockAlertText = await getBlockAlert.evaluate(
-          (el) => el.innerText,
-        );
-        if (blockAlertText.startsWith("Sorry you have encountered an error")) {
-          console.log("ip blocked reloading");
-          clearInterval(timer);
-          await browser.close();
-          return startBot();
-        }
-      }
-
       //start changing application category
 
       //get application category select option tag
@@ -121,10 +119,48 @@ async function startBot() {
       const selectedOptionSpanTag = await page.$(
         "#mat-select-4>div>div>span>span",
       );
-      //Select option number 2 if not already selected
-      if (!selectedOptionSpanTag) {
+      let selectedOptionText = "";
+      if (selectedOptionSpanTag) {
+        selectedOptionText = await selectedOptionSpanTag.evaluate(
+          (el) => el.innerText,
+        );
+      }
+      const alertTag = await page.$("form div.alert.alert-info");
+      let alertText = "";
+      if (alertTag) {
+        alertText = await alertTag.evaluate((el) => el.innerText);
+      }
+      //Select option number 1 if not already selected
+      if (!selectedOptionText.length) {
         if (selectApplicationCategoryTag) {
           //click options tag
+          await selectApplicationCategoryTag.click();
+          //get the option 1
+          const appCatValue2 = await page.$("#mat-option-2");
+          if (appCatValue2) {
+            //click the option 1
+            await appCatValue2.click();
+            console.log("option 2 selected first time");
+          }
+        }
+      }
+      if (selectedOptionText.length && alertText.length) {
+        if (
+          selectedOptionText === "Lithuania Temporary Residence Permit" &&
+          alertText.startsWith("We are sorry")
+        ) {
+          console.log("no date found, selecting first option");
+          //click options tag
+          await selectApplicationCategoryTag.click();
+          //get the option 1
+          const appCatValue1 = await page.$("#mat-option-1");
+          if (appCatValue1) {
+            //click the option 1
+            await appCatValue1.click();
+            console.log("option 1 selected");
+          }
+        }
+        if (selectedOptionText === "Lithuania National D Visa") {
           await selectApplicationCategoryTag.click();
           //get the option 2
           const appCatValue2 = await page.$("#mat-option-2");
@@ -135,33 +171,6 @@ async function startBot() {
           }
         }
       }
-
-      //if already selected
-      // if (selectedOptionSpanTag) {
-      //   const selectedText = await selectedOptionSpanTag.evaluate(
-      //     (el) => el.innerText,
-      //   );
-      //   if (selectedText === "Lithuania Temporary Residence Permit") {
-      //     await selectApplicationCategoryTag.click();
-      //     //get the option 1
-      //     const appCatValue1 = await page.$("#mat-option-1");
-      //     if (appCatValue1) {
-      //       //click the option 1
-      //       await appCatValue1.click();
-      //       console.log("option 1 selected");
-      //     }
-      //   }
-      //   if (selectedText === "Lithuania National D Visa") {
-      //     await selectApplicationCategoryTag.click();
-      //     //get the option 1
-      //     const appCatValue2 = await page.$("#mat-option-2");
-      //     if (appCatValue2) {
-      //       //click the option 1
-      //       await appCatValue2.click();
-      //       console.log("option 2 selected");
-      //     }
-      //   }
-      // }
 
       //end application changing category
     }
