@@ -73,6 +73,19 @@ async function startBot() {
           return startBot();
         }
       }
+      //cloud flare error 2
+      const cloudflare2 = await page.$("form div#challenge-overlay");
+      if (cloudflare2) {
+        const cloudflare2Msg = await cloudflare2.evaluate((el) => el.innerText);
+        if (
+          cloudflare2Msg.startsWith("This check is taking longer than expected")
+        ) {
+          console.log("cloudflare error, relaunching browser");
+          clearInterval(timer);
+          await browser.close();
+          return startBot();
+        }
+      }
 
       const emailBox = await page.$("input#mat-input-0");
       const pwdBox = await page.$("input#mat-input-1");
@@ -119,19 +132,9 @@ async function startBot() {
       const selectedOptionSpanTag = await page.$(
         "#mat-select-4>div>div>span>span",
       );
-      let selectedOptionText = "";
-      if (selectedOptionSpanTag) {
-        selectedOptionText = await selectedOptionSpanTag.evaluate(
-          (el) => el.innerText,
-        );
-      }
-      const alertTag = await page.$("form div.alert.alert-info");
-      let alertText = "";
-      if (alertTag) {
-        alertText = await alertTag.evaluate((el) => el.innerText);
-      }
+
       //Select option number 1 if not already selected
-      if (!selectedOptionText.length) {
+      if (!selectedOptionSpanTag) {
         if (selectApplicationCategoryTag) {
           //click options tag
           await selectApplicationCategoryTag.click();
@@ -144,39 +147,51 @@ async function startBot() {
           }
         }
       }
-      if (selectedOptionText.length && alertText.length) {
-        if (
-          selectedOptionText === "Lithuania Temporary Residence Permit" &&
-          alertText.startsWith("We are sorry")
-        ) {
-          console.log("no date found, selecting first option");
-          //click options tag
-          await selectApplicationCategoryTag.click();
-          //get the option 1
-          const appCatValue1 = await page.$("#mat-option-1");
-          if (appCatValue1) {
-            //click the option 1
-            await appCatValue1.click();
-            console.log("option 1 selected");
+      if (selectedOptionSpanTag) {
+        const selectedOptionText = await selectedOptionSpanTag.evaluate(
+          (el) => el.innerText,
+        );
+
+        if (selectedOptionText === "Lithuania Temporary Residence Permit") {
+          const alertTag = await page.$("form div.alert.alert-info");
+          if (alertTag) {
+            const alertText = await alertTag.evaluate((el) => el.innerText);
+            console.log(alertText);
+            if (alertText.startsWith("We are sorry")) {
+              //click options tag
+              await selectApplicationCategoryTag.click();
+              //get the option 1
+              const appCatValue1 = await page.$("#mat-option-1");
+              if (appCatValue1) {
+                //click the option 1
+                await appCatValue1.click();
+              }
+            }
           }
         }
+
         if (selectedOptionText === "Lithuania National D Visa") {
-          await selectApplicationCategoryTag.click();
-          //get the option 2
-          const appCatValue2 = await page.$("#mat-option-2");
-          if (appCatValue2) {
-            //click the option 2
-            await appCatValue2.click();
-            console.log("option 2 selected");
+          const alertTag = await page.$("form div.alert.alert-info");
+          if (alertTag) {
+            const alertText = await alertTag.evaluate((el) => el.innerText);
+            console.log(alertText);
+            await selectApplicationCategoryTag.click();
+            //get the option 2
+            const appCatValue2 = await page.$("#mat-option-2");
+            if (appCatValue2) {
+              //click the option 2
+              await appCatValue2.click();
+            }
           }
         }
       }
 
       //end application changing category
     }
+    //ended date finding page
 
     // await page.screenshot({ path: "page.jpg", fullPage: true });
-  }, 500);
+  }, 100);
 }
 
 startBot();
