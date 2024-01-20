@@ -80,7 +80,7 @@ async function startBot() {
 
       const submitButton = await page.$("form button");
       if (submitButton) {
-        await submitButton.click();
+        await submitButton?.click();
       }
     }
 
@@ -89,7 +89,7 @@ async function startBot() {
     ) {
       const gotoAppBtn = await page.$("button.mat-btn-lg");
       if (gotoAppBtn) {
-        await gotoAppBtn.evaluate((btn) => btn.click());
+        await gotoAppBtn.evaluate((btn) => btn?.click());
       }
     }
 
@@ -111,12 +111,12 @@ async function startBot() {
       if (!selectedOptionSpanTag) {
         if (selectApplicationCategoryTag) {
           //click options tag
-          await selectApplicationCategoryTag.click();
+          await selectApplicationCategoryTag?.click();
           //get the option 1
           const appCatValue2 = await page.$("#mat-option-2");
           if (appCatValue2) {
             //click the option 1
-            await appCatValue2.click();
+            await appCatValue2?.click();
             console.log("option 2 selected first time");
           }
         }
@@ -133,12 +133,12 @@ async function startBot() {
             console.log(alertText);
             if (alertText.startsWith("We are sorry")) {
               //click options tag
-              await selectApplicationCategoryTag.click();
+              await selectApplicationCategoryTag?.click();
               //get the option 1
               const appCatValue1 = await page.$("#mat-option-1");
               if (appCatValue1) {
                 //click the option 1
-                await appCatValue1.click();
+                await appCatValue1?.click();
               }
             }
           }
@@ -156,11 +156,11 @@ async function startBot() {
                 "#mat-select-2>div>div>span>span",
               );
               if (!selectedSubOptionSpanTag && subCategoryOption) {
-                await subCategoryOption.click();
+                await subCategoryOption?.click();
                 const getSubOption = await page.$("#mat-option-4");
 
                 if (getSubOption) {
-                  await getSubOption.click();
+                  await getSubOption?.click();
                 }
               }
 
@@ -180,12 +180,12 @@ async function startBot() {
               }
             }
 
-            //   await selectApplicationCategoryTag.click();
+            //   await selectApplicationCategoryTag?.click();
             // //get the option 2
             // const appCatValue2 = await page.$("#mat-option-2");
             // if (appCatValue2) {
             //   //click the option 2
-            //   await appCatValue2.click();
+            //   await appCatValue2?.click();
             // }
           }
         }
@@ -292,15 +292,19 @@ async function startBot() {
         );
         if (!selectedGenderSpanTag && genderOption) {
           //open gender popup
-          await genderOption?.evaluate((el) => el.click());
-          const getGenderMale = await page.$("#mat-option-6");
-          const getGenderFemale = await page.$("#mat-option-5");
+          await genderOption?.evaluate((el) => el?.click());
+          const getGenderMale = await page.$(
+            "div#mat-select-6-panel .mat-option:nth-child(2)",
+          );
+          const getGenderFemale = await page.$(
+            "div#mat-select-6-panel .mat-option:nth-child(1)",
+          );
           if (getGenderMale && getGenderFemale) {
             if (person.gender.toLocaleLowerCase() === "male") {
-              await getGenderMale.click();
+              await getGenderMale?.click();
             }
             if (person.gender.toLocaleLowerCase() === "female") {
-              await getGenderFemale.click();
+              await getGenderFemale?.click();
             }
           }
         }
