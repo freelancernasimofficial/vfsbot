@@ -208,6 +208,8 @@ async function startBot() {
       const contactNumberCountryCodeInput = await page.$("input#mat-input-6");
       const contactNumberInput = await page.$("input#mat-input-7");
       const emailInput = await page.$("input#mat-input-8");
+      const dateOfBirthInput = await page.$("input#dateOfBirth");
+      const passportExpireDateInput = await page.$("input#passportExpirtyDate");
 
       if (
         migrisApplicationNumberInput &&
@@ -216,7 +218,9 @@ async function startBot() {
         passportNumberInput &&
         contactNumberCountryCodeInput &&
         contactNumberInput &&
-        emailInput
+        emailInput &&
+        dateOfBirthInput &&
+        passportExpireDateInput
       ) {
         const migrisApplicationNumberInputLength =
           await migrisApplicationNumberInput.evaluate((el) => el.value.length);
@@ -266,6 +270,19 @@ async function startBot() {
         );
         if (!emailInputLength) {
           await emailInput.type(person.email);
+        }
+
+        const dateOfBirthInputLength = await dateOfBirthInput.evaluate(
+          (el) => el.value.length,
+        );
+        if (!dateOfBirthInputLength) {
+          await dateOfBirthInput.type(person.dob);
+        }
+
+        const passportExpireDateInputLength =
+          await passportExpireDateInput.evaluate((el) => el.value.length);
+        if (!passportExpireDateInputLength) {
+          await passportExpireDateInput.type(person.passport_expire_date);
         }
 
         //select option gender

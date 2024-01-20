@@ -6,16 +6,8 @@ export default {
   email: "sudiprayamajhi55@gmail.com",
   phone_number_country_code: "977",
   phone_number: "9861291747",
-  dob: {
-    date: 2,
-    month: 2,
-    year: 2001,
-  },
+  dob: "02/02/2001",
   nationality: "NEPAL",
   passport_number: "11008678",
-  passport_expire_date: {
-    date: 18,
-    month: 7,
-    year: 2028,
-  },
+  passport_expire_date: "18/07/2028",
 };
