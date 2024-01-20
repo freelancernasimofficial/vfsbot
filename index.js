@@ -175,7 +175,7 @@ async function startBot() {
                 );
                 if (formNameText === "Appointment Details") {
                   console.log("clock continue");
-                  await continueButton.click();
+                  await continueButton?.click();
                 }
               }
             }
@@ -267,6 +267,42 @@ async function startBot() {
         if (!emailInputLength) {
           await emailInput.type(person.email);
         }
+
+        //select option gender
+        const genderOption = await page.$("#mat-select-6");
+        const selectedGenderSpanTag = await page.$(
+          "#mat-select-6>div>div>span>span",
+        );
+        if (!selectedGenderSpanTag && genderOption) {
+          //open gender popup
+          await genderOption?.evaluate((el) => el.click());
+          const getGenderMale = await page.$("#mat-option-6");
+          const getGenderFemale = await page.$("#mat-option-5");
+          if (getGenderMale && getGenderFemale) {
+            if (person.gender.toLocaleLowerCase() === "male") {
+              await getGenderMale.click();
+            }
+            if (person.gender.toLocaleLowerCase() === "female") {
+              await getGenderFemale.click();
+            }
+          }
+        }
+
+        //nationality
+        if (selectedGenderSpanTag) {
+          const nationalityOption = await page.$("#mat-select-8");
+          const selectedNationalitySpanTag = await page.$(
+            "#mat-select-8>div>div>span>span",
+          );
+          if (!selectedNationalitySpanTag && nationalityOption) {
+            await nationalityOption?.click();
+            const nationality = await page.$("#mat-option-155");
+            if (nationality) {
+              await nationality?.click();
+            }
+          }
+        }
+        //nationality end
       }
     }
     //end details page
