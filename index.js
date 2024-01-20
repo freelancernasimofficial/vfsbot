@@ -242,17 +242,55 @@ async function startBot() {
         contactNumberInput &&
         emailInput
       ) {
-        await migrisApplicationNumberInput.type(
-          person.migris_application_number,
+        const migrisApplicationNumberInputLength =
+          await migrisApplicationNumberInput.evaluate((el) => el.value.length);
+        if (!migrisApplicationNumberInputLength) {
+          await migrisApplicationNumberInput.type(
+            person.migris_application_number,
+          );
+        }
+        const firstNameInputLength = await firstNameInput.evaluate(
+          (el) => el.value.length,
         );
-        await firstNameInput.type(person.first_name);
-        await lastNameInput.type(person.last_name);
-        await passportNumberInput.type(person.passport_number);
-        await contactNumberCountryCodeInput.type(
-          person.phone_number_country_code,
+        if (!firstNameInputLength) {
+          await firstNameInput.type(person.first_name);
+        }
+
+        const lastNameInputLength = await lastNameInput.evaluate(
+          (el) => el.value.length,
         );
-        await contactNumberInput.type(person.phone_number);
-        await emailInput.type(person.email);
+        if (!lastNameInputLength) {
+          await lastNameInput.type(person.last_name);
+        }
+
+        const passportNumberInputLength = await passportNumberInput.evaluate(
+          (el) => el.value.length,
+        );
+        if (!passportNumberInputLength) {
+          await passportNumberInput.type(person.passport_number);
+        }
+
+        const contactNumberCountryCodeInputLength =
+          await contactNumberCountryCodeInput.evaluate((el) => el.value.length);
+        if (!contactNumberCountryCodeInputLength) {
+          await contactNumberCountryCodeInput.type(
+            person.phone_number_country_code,
+          );
+        }
+
+        const contactNumberInputLength = await contactNumberInput.evaluate(
+          (el) => el.value.length,
+        );
+        if (!contactNumberInputLength) {
+          await contactNumberInput.type(person.phone_number);
+        }
+
+        const emailInputLength = await emailInput.evaluate(
+          (el) => el.value.length,
+        );
+        if (!emailInputLength) {
+          await emailInput.type(person.email);
+        }
       }
     }
     //end details page
