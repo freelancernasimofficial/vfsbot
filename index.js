@@ -6,6 +6,7 @@ import * as url from "url";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const pathToExtension = path.join(__dirname, "2captcha");
+import person from "./person.json";
 
 const loginURL = "https://visa.vfsglobal.com/npl/en/ltp/login";
 
@@ -193,8 +194,14 @@ async function startBot() {
               const continueButton = await page.$(
                 "form button.mat-btn-lg.btn-brand-orange[type='button']",
               );
+
               if (selectedSubOptionSpanTag && continueButton) {
-                await continueButton.click();
+                const btnText = await continueButton.evaluate(
+                  (el) => el.innerText,
+                );
+                if (btnText === "Continue") {
+                  await continueButton.click();
+                }
               }
             }
 
@@ -212,6 +219,43 @@ async function startBot() {
       //end application changing category
     }
     //ended date finding page
+
+    //start details page
+    if (
+      (await page.url()) ===
+      "https://visa.vfsglobal.com/npl/en/ltp/your-details"
+    ) {
+      const migrisApplicationNumberInput = await page.$("input#mat-input-2");
+      const firstNameInput = await page.$("input#mat-input-3");
+      const lastNameInput = await page.$("input#mat-input-4");
+      const passportNumberInput = await page.$("input#mat-input-5");
+      const contactNumberCountryCodeInput = await page.$("input#mat-input-6");
+      const contactNumberInput = await page.$("input#mat-input-7");
+      const emailInput = await page.$("input#mat-input-8");
+
+      if (
+        migrisApplicationNumberInput &&
+        firstNameInput &&
+        lastNameInput &&
+        passportNumberInput &&
+        contactNumberCountryCodeInput &&
+        contactNumberInput &&
+        emailInput
+      ) {
+        await migrisApplicationNumberInput.type(
+          person.migris_application_number,
+        );
+        await firstNameInput.type(person.first_name);
+        await lastNameInput.type(person.last_name);
+        await passportNumberInput.type(person.passport_number);
+        await contactNumberCountryCodeInput.type(
+          person.phone_number_country_code,
+        );
+        await contactNumberInput.type(person.phone_number);
+        await emailInput.type(person.email);
+      }
+    }
+    //end details page
 
     // await page.screenshot({ path: "page.jpg", fullPage: true });
   }, 100);
