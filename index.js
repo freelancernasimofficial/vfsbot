@@ -9,9 +9,9 @@ const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const pathToExtension = path.join(__dirname, "2captcha");
 
 const loginURL = "https://visa.vfsglobal.com/npl/en/ltp/login";
-let dateFindingFormPassed = false;
 
 async function startBot() {
+  let dateFindingFormPassed = false;
   const browser = await puppeteer.launch({
     targetFilter: (target) => !!target.url(),
     ignoreHTTPSErrors: true,
