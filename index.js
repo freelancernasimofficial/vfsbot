@@ -3,10 +3,10 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
 import path from "path";
 import * as url from "url";
+import person from "./person.js";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const pathToExtension = path.join(__dirname, "2captcha");
-import person from "./person.json";
 
 const loginURL = "https://visa.vfsglobal.com/npl/en/ltp/login";
 
@@ -59,33 +59,6 @@ async function startBot() {
         clearInterval(timer);
         await browser.close();
         return startBot();
-      }
-
-      //check cloudflare
-      const cloudFlareLabel = await page.$("form div.ctp-label");
-      if (cloudFlareLabel) {
-        const cloudFlareText = await cloudFlareLabel.evaluate(
-          (el) => el.innerText,
-        );
-        if (cloudFlareText === "Verify you are human") {
-          console.log("cloudflare error, relaunching browser");
-          clearInterval(timer);
-          await browser.close();
-          return startBot();
-        }
-      }
-      //cloud flare error 2
-      const cloudflare2 = await page.$("form div#challenge-overlay");
-      if (cloudflare2) {
-        const cloudflare2Msg = await cloudflare2.evaluate((el) => el.innerText);
-        if (
-          cloudflare2Msg.startsWith("This check is taking longer than expected")
-        ) {
-          console.log("cloudflare error, relaunching browser");
-          clearInterval(timer);
-          await browser.close();
-          return startBot();
-        }
       }
 
       const emailBox = await page.$("input#mat-input-0");
@@ -196,10 +169,12 @@ async function startBot() {
               );
 
               if (selectedSubOptionSpanTag && continueButton) {
-                const btnText = await continueButton.evaluate(
+                const formName = await page.$("form h1.fs-24.fs-sm-46.mb-25");
+                const formNameText = await formName.evaluate(
                   (el) => el.innerText,
                 );
-                if (btnText === "Continue") {
+                if (formNameText === "Appointment Details") {
+                  console.log("clock continue");
                   await continueButton.click();
                 }
               }
@@ -225,6 +200,7 @@ async function startBot() {
       (await page.url()) ===
       "https://visa.vfsglobal.com/npl/en/ltp/your-details"
     ) {
+      console.log("process for details", Date.now().toString().substring(6));
       const migrisApplicationNumberInput = await page.$("input#mat-input-2");
       const firstNameInput = await page.$("input#mat-input-3");
       const lastNameInput = await page.$("input#mat-input-4");
@@ -296,7 +272,7 @@ async function startBot() {
     //end details page
 
     // await page.screenshot({ path: "page.jpg", fullPage: true });
-  }, 100);
+  }, 300);
 }
 
 startBot();
