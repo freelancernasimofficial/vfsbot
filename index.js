@@ -80,7 +80,7 @@ async function startBot() {
 
       const submitButton = await page.$("form button");
       if (submitButton) {
-        await submitButton?.click();
+        await submitButton?.evaluate((el) => el.click());
       }
     }
 
@@ -111,7 +111,7 @@ async function startBot() {
       if (!selectedOptionSpanTag) {
         if (selectApplicationCategoryTag) {
           //click options tag
-          await selectApplicationCategoryTag?.click();
+          await selectApplicationCategoryTag?.evaluate((el) => el.click());
           //get the option 1
           const appCatValue2 = await page.$("#mat-option-2");
           if (appCatValue2) {
@@ -176,6 +176,9 @@ async function startBot() {
                 if (formNameText === "Appointment Details") {
                   console.log("clock continue");
                   await continueButton?.click();
+                  await page.waitForNavigation({
+                    waitUntil: "domcontentloaded",
+                  });
                 }
               }
             }
