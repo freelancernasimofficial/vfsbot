@@ -9,6 +9,7 @@ const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const pathToExtension = path.join(__dirname, "2captcha");
 
 const loginURL = "https://visa.vfsglobal.com/npl/en/ltp/login";
+let dateFindingFormPassed = false;
 
 async function startBot() {
   const browser = await puppeteer.launch({
@@ -49,6 +50,15 @@ async function startBot() {
         await browser.close();
         return startBot();
       }
+    }
+    if (
+      (await page.url()) ===
+      "https://visa.vfsglobal.com/npl/en/ltp/page-not-found"
+    ) {
+      console.log("page not found relaunching");
+      clearInterval(timer);
+      await browser.close();
+      return startBot();
     }
 
     if ((await page.url()) === loginURL) {
@@ -168,18 +178,14 @@ async function startBot() {
                 "form button.mat-btn-lg.btn-brand-orange[type='button']",
               );
 
-              if (selectedSubOptionSpanTag && continueButton) {
-                const formName = await page.$("form h1.fs-24.fs-sm-46.mb-25");
-                const formNameText = await formName.evaluate(
-                  (el) => el.innerText,
-                );
-                if (formNameText === "Appointment Details") {
-                  console.log("clock continue");
-                  await continueButton?.click();
-                  await page.waitForNavigation({
-                    waitUntil: "domcontentloaded",
-                  });
-                }
+              if (
+                selectedSubOptionSpanTag &&
+                continueButton &&
+                !dateFindingFormPassed
+              ) {
+                console.log("click continue");
+                await continueButton?.evaluate((el) => el.click());
+                dateFindingFormPassed = true;
               }
             }
 
@@ -320,7 +326,9 @@ async function startBot() {
           );
           if (!selectedNationalitySpanTag && nationalityOption) {
             await nationalityOption?.click();
-            const nationality = await page.$("#mat-option-155");
+            const nationality = await page.$(
+              "div#mat-select-8-panel .mat-option:nth-child(148)",
+            );
             if (nationality) {
               await nationality?.click();
             }
