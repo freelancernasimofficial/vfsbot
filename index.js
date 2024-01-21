@@ -3,11 +3,22 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
 import path from "path";
 import * as url from "url";
-import person from "./person.js";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const pathToExtension = path.join(__dirname, "2captcha");
-
+const person = {
+  migris_application_number: "2401-LLG-1079",
+  first_name: "Rupa",
+  last_name: "Poudel",
+  gender: "Female",
+  email: "rupapoudel47@gmail.com",
+  phone_number_country_code: "977",
+  phone_number: "9813842335",
+  dob: "09051997",
+  nationality: "NEPAL",
+  passport_number: "11061310",
+  passport_expire_date: "22082028",
+};
 const loginURL = "https://visa.vfsglobal.com/npl/en/ltp/login";
 
 async function startBot() {
@@ -166,7 +177,7 @@ async function startBot() {
                 "#mat-select-2>div>div>span>span",
               );
               if (!selectedSubOptionSpanTag && subCategoryOption) {
-                await subCategoryOption?.click();
+                await subCategoryOption?.evaluate((el) => el.click());
                 const getSubOption = await page.$("#mat-option-4");
 
                 if (getSubOption) {
@@ -232,66 +243,85 @@ async function startBot() {
         passportExpireDateInput
       ) {
         const migrisApplicationNumberInputLength =
-          await migrisApplicationNumberInput.evaluate((el) => el.value.length);
-        if (!migrisApplicationNumberInputLength) {
+          await migrisApplicationNumberInput.evaluate((el) => el?.value);
+        if (
+          migrisApplicationNumberInputLength.toUpperCase() !==
+          person.migris_application_number.toUpperCase()
+        ) {
           await migrisApplicationNumberInput.type(
-            person.migris_application_number,
+            person?.migris_application_number,
           );
         }
         const firstNameInputLength = await firstNameInput.evaluate(
-          (el) => el.value.length,
+          (el) => el?.value,
         );
-        if (!firstNameInputLength) {
-          await firstNameInput.type(person.first_name);
+        if (
+          firstNameInputLength.toUpperCase() !== person.first_name.toUpperCase()
+        ) {
+          await firstNameInput.type(person?.first_name);
         }
 
         const lastNameInputLength = await lastNameInput.evaluate(
-          (el) => el.value.length,
+          (el) => el?.value,
         );
-        if (!lastNameInputLength) {
-          await lastNameInput.type(person.last_name);
+        if (
+          lastNameInputLength.toUpperCase() !== person.last_name.toUpperCase()
+        ) {
+          await lastNameInput.type(person?.last_name);
         }
 
         const passportNumberInputLength = await passportNumberInput.evaluate(
-          (el) => el.value.length,
+          (el) => el?.value,
         );
-        if (!passportNumberInputLength) {
-          await passportNumberInput.type(person.passport_number);
+        if (
+          passportNumberInputLength.toUpperCase() !==
+          person.passport_number.toUpperCase()
+        ) {
+          await passportNumberInput.type(person?.passport_number);
         }
 
         const contactNumberCountryCodeInputLength =
-          await contactNumberCountryCodeInput.evaluate((el) => el.value.length);
-        if (!contactNumberCountryCodeInputLength) {
+          await contactNumberCountryCodeInput.evaluate((el) => el?.value);
+        if (
+          contactNumberCountryCodeInputLength.toUpperCase() !==
+          person.phone_number_country_code.toUpperCase()
+        ) {
           await contactNumberCountryCodeInput.type(
-            person.phone_number_country_code,
+            person?.phone_number_country_code,
           );
         }
 
         const contactNumberInputLength = await contactNumberInput.evaluate(
-          (el) => el.value.length,
+          (el) => el?.value,
         );
-        if (!contactNumberInputLength) {
-          await contactNumberInput.type(person.phone_number);
+        if (
+          contactNumberInputLength.toUpperCase() !==
+          person.phone_number.toUpperCase()
+        ) {
+          await contactNumberInput.type(person?.phone_number);
         }
 
-        const emailInputLength = await emailInput.evaluate(
-          (el) => el.value.length,
-        );
-        if (!emailInputLength) {
-          await emailInput.type(person.email);
+        const emailInputLength = await emailInput.evaluate((el) => el?.value);
+        if (emailInputLength.toUpperCase() !== person.email.toUpperCase()) {
+          await emailInput.type(person?.email);
         }
 
         const dateOfBirthInputLength = await dateOfBirthInput.evaluate(
-          (el) => el.value.length,
+          (el) => el?.value,
         );
-        if (!dateOfBirthInputLength) {
-          await dateOfBirthInput.type(person.dob);
+        if (
+          dateOfBirthInputLength.replace(/\//g, "") !== person?.dob.toString()
+        ) {
+          await dateOfBirthInput.type(person?.dob);
         }
 
         const passportExpireDateInputLength =
-          await passportExpireDateInput.evaluate((el) => el.value.length);
-        if (!passportExpireDateInputLength) {
-          await passportExpireDateInput.type(person.passport_expire_date);
+          await passportExpireDateInput.evaluate((el) => el.value);
+        if (
+          passportExpireDateInputLength.replace(/\//g, "") !==
+          person.passport_expire_date.toString()
+        ) {
+          await passportExpireDateInput.type(person?.passport_expire_date);
         }
 
         //select option gender
@@ -309,11 +339,11 @@ async function startBot() {
             "div#mat-select-6-panel .mat-option:nth-child(1)",
           );
           if (getGenderMale && getGenderFemale) {
-            if (person.gender.toLocaleLowerCase() === "male") {
-              await getGenderMale?.click();
+            if (person?.gender.toLocaleLowerCase() === "male") {
+              await getGenderMale?.evaluate((el) => el.click());
             }
-            if (person.gender.toLocaleLowerCase() === "female") {
-              await getGenderFemale?.click();
+            if (person?.gender.toLocaleLowerCase() === "female") {
+              await getGenderFemale?.evaluate((el) => el.click());
             }
           }
         }
@@ -338,7 +368,7 @@ async function startBot() {
     //end details page
 
     // await page.screenshot({ path: "page.jpg", fullPage: true });
-  }, 100);
+  }, 400);
 }
 
 startBot();
