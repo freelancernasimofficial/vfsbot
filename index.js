@@ -90,11 +90,11 @@ async function startBot() {
         );
         const isPwdEntered = await emailBox.evaluate((el) => el?.value?.length);
         if (!isEmailEntered) {
-          await emailBox.type("lokoxen748@duobp.com");
+          await emailBox.type("winbazilive@gmail.com");
           console.log("email entered");
         }
         if (!isPwdEntered) {
-          await pwdBox.type("ANi$h@0093");
+          await pwdBox.type("Mak223166@");
           console.log("password entered");
         }
       }
@@ -200,7 +200,7 @@ async function startBot() {
               }
             }
 
-            //   await selectApplicationCategoryTag?.click();
+            // await selectApplicationCategoryTag?.click();
             // //get the option 2
             // const appCatValue2 = await page.$("#mat-option-2");
             // if (appCatValue2) {
