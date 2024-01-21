@@ -319,19 +319,17 @@ async function startBot() {
         }
 
         //nationality
-        if (selectedGenderSpanTag) {
-          const nationalityOption = await page.$("#mat-select-8");
-          const selectedNationalitySpanTag = await page.$(
-            "#mat-select-8>div>div>span>span",
+        const nationalityOption = await page.$("#mat-select-8");
+        const selectedNationalitySpanTag = await page.$(
+          "#mat-select-8>div>div>span>span",
+        );
+        if (!selectedNationalitySpanTag && nationalityOption) {
+          await nationalityOption?.click();
+          const nationality = await page.$(
+            "div#mat-select-8-panel .mat-option:nth-child(148)",
           );
-          if (!selectedNationalitySpanTag && nationalityOption) {
-            await nationalityOption?.click();
-            const nationality = await page.$(
-              "div#mat-select-8-panel .mat-option:nth-child(148)",
-            );
-            if (nationality) {
-              await nationality?.click();
-            }
+          if (nationality) {
+            await nationality?.click();
           }
         }
         //nationality end
@@ -340,7 +338,7 @@ async function startBot() {
     //end details page
 
     // await page.screenshot({ path: "page.jpg", fullPage: true });
-  }, 300);
+  }, 100);
 }
 
 startBot();
