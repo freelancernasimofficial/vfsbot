@@ -90,11 +90,11 @@ async function startBot() {
         );
         const isPwdEntered = await emailBox.evaluate((el) => el?.value?.length);
         if (!isEmailEntered) {
-          await emailBox.type("winbazilive@gmail.com");
+          await emailBox.type("lokoxen748@duobp.com");
           console.log("email entered");
         }
         if (!isPwdEntered) {
-          await pwdBox.type("Mak223166@");
+          await pwdBox.type("ANi$h@0093");
           console.log("password entered");
         }
       }
